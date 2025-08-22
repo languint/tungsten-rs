@@ -1,4 +1,4 @@
-use std::{str::FromStr, time::{Duration, Instant}};
+use std::{str::FromStr, time::{Instant}};
 
 use chess::{Board, ChessMove, Game};
 use clap::Parser;
@@ -15,7 +15,7 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        cli::Commands::PlaySelf { position, depth } => {
+        cli::Commands::PlaySelf { position, depth, output_pgn: pgn } => {
             cli::log_header(
                 "cmd",
                 format!("play-self [position = {position}, depth = {depth}]").as_str(),
@@ -55,7 +55,9 @@ fn main() {
                         0,
                         Some(CLI_YELLOW_HEADER),
                     );
-                    println!("{}", pgn::to_pgn(&board, &moves));
+                    if pgn {
+                        println!("{}", pgn::to_pgn(&board, &moves));
+                    }
                     break;
                 }
                 
@@ -82,9 +84,10 @@ fn main() {
                         0,
                         Some(CLI_YELLOW_HEADER),
                     );
-                    println!("{}", pgn::to_pgn(&board, &moves));
+                    if pgn {
+                        println!("{}", pgn::to_pgn(&board, &moves));
+                    }
                     break;
-                
                 }
             }
         }

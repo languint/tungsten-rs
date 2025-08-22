@@ -1,4 +1,4 @@
-use chess::{Board, BoardStatus, ChessMove, EMPTY, File, Game, MoveGen, Piece, Rank, Square};
+use chess::{Board, BoardStatus, ChessMove, EMPTY, File, Game, MoveGen, Piece, Rank};
 
 #[inline]
 fn file_to_string(file: &File) -> String {

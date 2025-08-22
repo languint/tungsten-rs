@@ -15,6 +15,8 @@ pub enum Commands {
         position: String,
         #[arg(short, long)]
         depth: usize,
+        #[arg(short, long, default_value_t = false)]
+        output_pgn: bool,
     },
 }
 
