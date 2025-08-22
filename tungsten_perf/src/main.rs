@@ -1,4 +1,4 @@
-use std::{str::FromStr, time::Instant};
+use std::{str::FromStr, time::{Duration, Instant}};
 
 use chess::{Board, ChessMove, Game};
 use clap::Parser;
@@ -8,6 +8,7 @@ use crate::cli::{CLI_BLUE_HEADER, CLI_RED_HEADER, CLI_YELLOW_HEADER, Cli};
 
 mod cli;
 mod pgn;
+mod perf;
 
 const STARTING_POSITION: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -18,7 +19,7 @@ fn main() {
         cli::Commands::PlaySelf {
             position,
             depth,
-            output_pgn: pgn,
+            output_pgn,
         } => {
             cli::log_header(
                 "cmd",
@@ -38,6 +39,8 @@ fn main() {
 
             let mut moves: Vec<ChessMove> = Vec::new();
 
+            let mut total_time = Duration::new(0, 0);
+
             loop {
                 let search = Search::new(&game.current_position());
                 let start = Instant::now();
@@ -46,7 +49,9 @@ fn main() {
 
                 let end = Instant::now();
 
-                let time = (end - start).as_millis();
+                let time = end - start;
+                total_time += time; 
+                let time = time.as_millis();
 
                 if game.can_declare_draw() {
                     game.declare_draw();
@@ -55,11 +60,11 @@ fn main() {
                 if let Some(result) = game.result() {
                     cli::log_header(
                         "eval",
-                        format!("game finished [result={:?}]", result).as_str(),
+                        format!("game finished result={:?} total_time={}ms", result, total_time.as_millis()).as_str(),
                         0,
                         Some(CLI_YELLOW_HEADER),
                     );
-                    if pgn {
+                    if output_pgn {
                         println!("{}", pgn::to_pgn(&board, &moves));
                     }
                     break;
@@ -83,11 +88,11 @@ fn main() {
                 } else {
                     cli::log_header(
                         "eval",
-                        format!("game finished [result={:?}]", game.result()).as_str(),
+                        format!("game finished [result={:?},total_time={}ms]", game.result(), total_time.as_millis()).as_str(),
                         0,
                         Some(CLI_YELLOW_HEADER),
                     );
-                    if pgn {
+                    if output_pgn {
                         println!("{}", pgn::to_pgn(&board, &moves));
                     }
                     break;
