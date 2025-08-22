@@ -1,0 +1,11 @@
+[package]
+name = "tungsten_perf"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chess = "3.2.0"
+clap = { version = "4.5.45", features = ["derive"] }
+owo-colors = "4.2.2"
+stockfish = "0.2.11"
+tungsten_eval = {workspace = true}
