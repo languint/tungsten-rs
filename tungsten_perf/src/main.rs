@@ -1,4 +1,4 @@
-use std::{str::FromStr, time::{Instant}};
+use std::{str::FromStr, time::Instant};
 
 use chess::{Board, ChessMove, Game};
 use clap::Parser;
@@ -15,7 +15,11 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        cli::Commands::PlaySelf { position, depth, output_pgn: pgn } => {
+        cli::Commands::PlaySelf {
+            position,
+            depth,
+            output_pgn: pgn,
+        } => {
             cli::log_header(
                 "cmd",
                 format!("play-self [position = {position}, depth = {depth}]").as_str(),
@@ -43,7 +47,7 @@ fn main() {
                 let end = Instant::now();
 
                 let time = (end - start).as_millis();
-    
+
                 if game.can_declare_draw() {
                     game.declare_draw();
                 }
@@ -60,20 +64,19 @@ fn main() {
                     }
                     break;
                 }
-                
+
                 cli::log_header(
                     "eval",
                     format!(
                         "score={score} best_move={:?} time={}ms",
-                        best_move
-                            .map(|m| (m.get_source().to_string(), m.get_dest().to_string())),
-                            time
-                        )
+                        best_move.map(|m| (m.get_source().to_string(), m.get_dest().to_string())),
+                        time
+                    )
                     .as_str(),
                     2,
                     Some(CLI_YELLOW_HEADER),
                 );
-                
+
                 if let Some(mv) = best_move {
                     game.make_move(mv);
                     moves.push(mv);

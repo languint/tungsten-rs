@@ -37,7 +37,7 @@ fn to_algebraic(board: &Board, mv: &ChessMove) -> Result<String, String> {
         .ok_or_else(|| "Source piece is None!".to_string())?;
     let is_capture = board.piece_on(mv.get_dest()).is_some()
         || (source_piece == Piece::Pawn && mv.get_dest().get_file() != mv.get_source().get_file());
-    
+
     if source_piece == Piece::King
         && (mv.get_source().get_file() as i8 - mv.get_dest().get_file() as i8).abs() > 1
     {
